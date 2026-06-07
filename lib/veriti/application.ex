@@ -21,7 +21,9 @@ defmodule Veriti.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Veriti.Supervisor]
-    Supervisor.start_link(children, opts)
+    result = Supervisor.start_link(children, opts)
+    if Mix.env() == :dev, do: Application.ensure_all_started(:tidewave)
+    result
   end
 
   # Tell Phoenix to update the endpoint configuration

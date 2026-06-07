@@ -1,0 +1,71 @@
+# Veriti — Action Plan
+
+Elixir/Phoenix web app for validating vehicle titles.
+
+---
+
+## Status Legend
+- [x] Complete
+- [ ] Not started
+
+---
+
+## 1. Foundation
+- [x] Scaffold Phoenix 1.8.7 app (Ecto, LiveView, Tailwind, DaisyUI)
+- [x] Create PostgreSQL database
+- [x] Initial git commit
+
+## 2. Authentication
+- [x] Generate auth with `mix phx.gen.auth` (LiveView-based)
+- [x] `users` and `users_tokens` tables migrated
+- [x] Register, log in, log out, settings, password reset flows
+- [x] Nav in root layout reflects auth state
+- [x] 111 tests passing
+
+## 3. Tidewave (MCP Dev Tooling)
+- [x] Add `tidewave` to `mix.exs` deps (dev only)
+- [x] Mount Tidewave plug in `lib/veriti_web/endpoint.ex` (dev env guard)
+- [x] Verify MCP server available for AI-assisted testing and inspection
+
+## 4. Title Submission
+- [x] `TitleSubmissions` Ecto schema and migration
+  - Fields: file_path, original_filename, content_type, status, user_id, timestamps
+- [x] LiveView form with image file upload (Phoenix LiveView `allow_upload`)
+  - Accept JPG, PNG, PDF; enforce max file size
+  - Show upload preview before submission
+- [x] Store uploaded file (local for dev, object storage for prod)
+- [x] Route protected behind authenticated scope
+
+## 5. Title Validation Engine
+- [ ] OCR extraction via `tesseract_ocr` hex package (wraps Tesseract)
+  - Run OCR on uploaded image to extract raw text
+  - Parse extracted text into structured fields (VIN, title number, owner, odometer, lienholder, state)
+- [ ] `Veriti.Validation` context with pure validation logic
+- [ ] VIN checksum validation (ISO 3779)
+- [ ] State-specific title number format rules
+- [ ] Lien detection logic
+- [ ] Validation result schema (pass / fail / warning + reason codes)
+- [ ] Associate results with submission
+
+## 6. Validation Results UI
+- [ ] Results page showing pass/fail per field with reasons
+- [ ] Submission history list (index) per user
+- [ ] Detail view for a past submission
+
+## 7. Admin / Reporting
+- [ ] Admin role on `users` (boolean flag or separate table)
+- [ ] Admin-only route scope
+- [ ] Submissions dashboard (all users, filterable by status/date)
+- [ ] CSV export of submissions
+
+## 8. Polish & Hardening
+- [ ] Branded layout (replace Phoenix defaults)
+- [ ] Error pages (404, 500) styled
+- [ ] Rate limiting on submission endpoint
+- [ ] Pagination on history list
+- [ ] End-to-end test coverage for happy path
+
+---
+
+## Next Up
+**Title Validation Engine** — OCR extraction and validation logic (section 5)
