@@ -54,9 +54,9 @@ Elixir/Phoenix web app for validating vehicle titles.
 - [x] Associate results with submission (async via Task.Supervisor)
 
 ## 7. Validation Results UI
-- [ ] Results page showing pass/fail per field with reasons
-- [ ] Submission history list (index) per user
-- [ ] Detail view for a past submission
+- [x] Results page showing pass/fail per field with reasons
+- [x] Submission history list (index) per user — live spinner + PubSub update when validation completes
+- [x] Detail view for a past submission (`/submissions/:id`)
 
 ## 8. Admin / Reporting
 - [ ] Admin role on `users` (boolean flag or separate table)
@@ -74,4 +74,4 @@ Elixir/Phoenix web app for validating vehicle titles.
 ---
 
 ## Next Up
-**Validation Results UI** — Results page, submission detail view (section 7)
+**Admin / Reporting** — Admin role, dashboard, CSV export (section 8)

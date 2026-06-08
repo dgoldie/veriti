@@ -54,7 +54,7 @@ defmodule Veriti.Validation do
   Updates the submission status and persists a ValidationResult record.
   Designed to be called from a background task.
   """
-  def process(%{id: submission_id, file_path: file_path, content_type: content_type} = submission) do
+  def process(%{id: submission_id, user_id: user_id, file_path: file_path, content_type: content_type} = submission) do
     TitleSubmissions.update_submission_status(submission, "processing")
 
     case OCR.extract_text(file_path, content_type) do
@@ -79,16 +79,24 @@ defmodule Veriti.Validation do
         |> Repo.insert!()
 
         TitleSubmissions.update_submission_status(submission, "completed")
+        broadcast_complete(submission_id, user_id)
 
       {:error, :pdf_not_supported} ->
         persist_error(submission_id, "PDF OCR is not yet supported. Please upload a JPG or PNG image.")
         TitleSubmissions.update_submission_status(submission, "failed")
+        broadcast_complete(submission_id, user_id)
 
       {:error, reason} ->
         Logger.warning("OCR failed for submission #{submission_id}: #{inspect(reason)}")
         persist_error(submission_id, "OCR processing failed: #{reason}")
         TitleSubmissions.update_submission_status(submission, "failed")
+        broadcast_complete(submission_id, user_id)
     end
+  end
+
+  @doc "Returns the ValidationResult for a given submission, or nil if not yet created."
+  def get_result_for_submission(submission_id) do
+    Repo.get_by(Result, submission_id: submission_id)
   end
 
   # ---------------------------------------------------------------------------
@@ -204,5 +212,10 @@ defmodule Veriti.Validation do
       submission_id: submission_id
     })
     |> Repo.insert()
+  end
+
+  defp broadcast_complete(submission_id, user_id) do
+    Phoenix.PubSub.broadcast(Veriti.PubSub, "submission:#{submission_id}", :validation_complete)
+    Phoenix.PubSub.broadcast(Veriti.PubSub, "submissions:user:#{user_id}", :validation_complete)
   end
 end

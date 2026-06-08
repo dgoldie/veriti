@@ -14,6 +14,12 @@ defmodule Veriti.TitleSubmissions do
 
   def get_submission!(id), do: Repo.get!(TitleSubmission, id)
 
+  def get_user_submission!(user_id, id) do
+    TitleSubmission
+    |> where(id: ^id, user_id: ^user_id)
+    |> Repo.one!()
+  end
+
   def create_submission(attrs) do
     %TitleSubmission{}
     |> TitleSubmission.changeset(attrs)

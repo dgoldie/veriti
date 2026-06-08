@@ -6,8 +6,20 @@ defmodule VeritiWeb.TitleSubmissionLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     user = socket.assigns.current_scope.user
+
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(Veriti.PubSub, "submissions:user:#{user.id}")
+    end
+
     submissions = TitleSubmissions.list_user_submissions(user.id)
     {:ok, assign(socket, :submissions, submissions)}
+  end
+
+  @impl true
+  def handle_info(:validation_complete, socket) do
+    user = socket.assigns.current_scope.user
+    submissions = TitleSubmissions.list_user_submissions(user.id)
+    {:noreply, assign(socket, :submissions, submissions)}
   end
 
   @impl true
@@ -40,6 +52,7 @@ defmodule VeritiWeb.TitleSubmissionLive.Index do
                   <th>File</th>
                   <th>Status</th>
                   <th>Submitted</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -49,10 +62,18 @@ defmodule VeritiWeb.TitleSubmissionLive.Index do
                     <td>
                       <span class={["badge", status_badge_class(sub.status)]}>
                         {sub.status}
+                        <%= if sub.status in ["pending", "processing"] do %>
+                          <span class="loading loading-spinner loading-xs ml-1"></span>
+                        <% end %>
                       </span>
                     </td>
                     <td class="text-base-content/60 text-sm">
                       {Calendar.strftime(sub.inserted_at, "%b %d, %Y")}
+                    </td>
+                    <td class="text-right">
+                      <.link navigate={~p"/submissions/#{sub.id}"} class="btn btn-ghost btn-xs">
+                        View
+                      </.link>
                     </td>
                   </tr>
                 <% end %>
