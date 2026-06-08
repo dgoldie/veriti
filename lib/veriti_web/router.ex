@@ -17,6 +17,10 @@ defmodule VeritiWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :require_admin do
+    plug :require_admin_user
+  end
+
   scope "/", VeritiWeb do
     pipe_through :browser
 
@@ -43,6 +47,23 @@ defmodule VeritiWeb.Router do
       live_dashboard "/dashboard", metrics: VeritiWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Admin routes
+
+  scope "/", VeritiWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :require_admin,
+      on_mount: [{VeritiWeb.UserAuth, :require_admin}] do
+      live "/admin", AdminLive.Dashboard, :index
+    end
+  end
+
+  scope "/admin", VeritiWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_admin]
+
+    get "/submissions/export.csv", AdminController, :export_csv
   end
 
   ## Authentication routes

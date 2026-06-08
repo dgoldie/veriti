@@ -9,6 +9,7 @@ defmodule Veriti.TitleSubmissions.TitleSubmission do
     field :status, :string, default: "pending"
 
     belongs_to :user, Veriti.Accounts.User
+    has_one :validation_result, Veriti.Validation.Result, foreign_key: :submission_id
 
     timestamps(type: :utc_datetime)
   end

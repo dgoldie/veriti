@@ -281,6 +281,15 @@ defmodule Veriti.Accounts do
     :ok
   end
 
+  ## Admin
+
+  @doc "Grants admin privileges to a user. Useful from IEx: Accounts.grant_admin(user)"
+  def grant_admin(%User{} = user) do
+    user
+    |> Ecto.Changeset.change(is_admin: true)
+    |> Repo.update()
+  end
+
   ## Token helper
 
   defp update_user_and_delete_all_tokens(changeset) do

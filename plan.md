@@ -59,10 +59,10 @@ Elixir/Phoenix web app for validating vehicle titles.
 - [x] Detail view for a past submission (`/submissions/:id`)
 
 ## 8. Admin / Reporting
-- [ ] Admin role on `users` (boolean flag or separate table)
-- [ ] Admin-only route scope
-- [ ] Submissions dashboard (all users, filterable by status/date)
-- [ ] CSV export of submissions
+- [x] Admin role on `users` (`is_admin` boolean flag; `Accounts.grant_admin/1` helper)
+- [x] Admin-only route scope (`require_admin` on_mount + plug)
+- [x] Submissions dashboard at `/admin` — stats cards, status/date filters, all-users table with VIN + validation status
+- [x] CSV export at `/admin/submissions/export.csv` — filters respected, download attachment
 
 ## 9. Polish & Hardening
 - [ ] Branded layout (replace Phoenix defaults)
@@ -74,4 +74,4 @@ Elixir/Phoenix web app for validating vehicle titles.
 ---
 
 ## Next Up
-**Admin / Reporting** — Admin role, dashboard, CSV export (section 8)
+**Polish & Hardening** — Error pages, rate limiting, pagination, E2E tests (section 9)

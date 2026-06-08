@@ -230,6 +230,23 @@ defmodule VeritiWeb.UserAuth do
     end
   end
 
+  def on_mount(:require_admin, _params, session, socket) do
+    socket = mount_current_scope(socket, session)
+
+    if socket.assigns.current_scope &&
+         socket.assigns.current_scope.user &&
+         socket.assigns.current_scope.user.is_admin do
+      {:cont, socket}
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You must be an admin to access this page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/")
+
+      {:halt, socket}
+    end
+  end
+
   def on_mount(:require_sudo_mode, _params, session, socket) do
     socket = mount_current_scope(socket, session)
 
@@ -263,6 +280,20 @@ defmodule VeritiWeb.UserAuth do
   end
 
   def signed_in_path(_), do: ~p"/"
+
+  @doc "Plug for routes that require admin privileges."
+  def require_admin_user(conn, _opts) do
+    if conn.assigns.current_scope &&
+         conn.assigns.current_scope.user &&
+         conn.assigns.current_scope.user.is_admin do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be an admin to access this page.")
+      |> redirect(to: ~p"/")
+      |> halt()
+    end
+  end
 
   @doc """
   Plug for routes that require the user to be authenticated.
