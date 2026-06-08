@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title default="Veriti" suffix=" · Phoenix Framework" phx-no-format>{assigns[:page_title]}</.live_title>
+    <.live_title default="Veriti" suffix=" · Veriti" phx-no-format>{assigns[:page_title]}</.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
     </script>
@@ -23,37 +23,39 @@
           setTheme(localStorage.getItem("phx:theme") || "system");
         }
         window.addEventListener("storage", (e) => e.key === "phx:theme" && setTheme(e.newValue || "system"));
-        
         window.addEventListener("phx:set-theme", (e) => setTheme(e.target.dataset.phxTheme));
       })();
     </script>
   </head>
   <body>
-    <ul class="menu menu-horizontal w-full relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
-      <%= if @current_scope do %>
-        <li>
-          {@current_scope.user.email}
-        </li>
-        <%= if @current_scope.user.is_admin do %>
-          <li>
-            <.link href={~p"/admin"}>Admin</.link>
-          </li>
+    <header class="navbar bg-base-100 border-b border-base-200 px-4 sm:px-6 lg:px-8 sticky top-0 z-10">
+      <div class="flex-1">
+        <a href={~p"/"} class="text-xl font-bold text-primary tracking-tight">Veriti</a>
+      </div>
+      <nav class="flex items-center gap-1">
+        <%= if @current_scope do %>
+          <.link href={~p"/submissions"} class="btn btn-ghost btn-sm">My Submissions</.link>
+          <%= if @current_scope.user.is_admin do %>
+            <.link href={~p"/admin"} class="btn btn-ghost btn-sm">Admin</.link>
+          <% end %>
+          <div class="dropdown dropdown-end ml-1">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-sm gap-1">
+              <span class="hidden sm:inline text-sm opacity-70 max-w-40 truncate">
+                {@current_scope.user.email}
+              </span>
+              <span class="hero-chevron-down size-4"></span>
+            </div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow-lg w-48 mt-1 border border-base-200">
+              <li><.link href={~p"/users/settings"}>Settings</.link></li>
+              <li><.link href={~p"/users/log-out"} method="delete">Log out</.link></li>
+            </ul>
+          </div>
+        <% else %>
+          <.link href={~p"/users/register"} class="btn btn-ghost btn-sm">Register</.link>
+          <.link href={~p"/users/log-in"} class="btn btn-primary btn-sm">Log in</.link>
         <% end %>
-        <li>
-          <.link href={~p"/users/settings"}>Settings</.link>
-        </li>
-        <li>
-          <.link href={~p"/users/log-out"} method="delete">Log out</.link>
-        </li>
-      <% else %>
-        <li>
-          <.link href={~p"/users/register"}>Register</.link>
-        </li>
-        <li>
-          <.link href={~p"/users/log-in"}>Log in</.link>
-        </li>
-      <% end %>
-    </ul>
+      </nav>
+    </header>
     {@inner_content}
   </body>
 </html>

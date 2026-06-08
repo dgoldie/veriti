@@ -13,6 +13,7 @@ defmodule Veriti.Application do
       {DNSCluster, query: Application.get_env(:veriti, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Veriti.PubSub},
       {Task.Supervisor, name: Veriti.TaskSupervisor},
+      Veriti.RateLimiter,
       VeritiWeb.Endpoint
     ]
 

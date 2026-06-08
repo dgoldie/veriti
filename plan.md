@@ -65,13 +65,13 @@ Elixir/Phoenix web app for validating vehicle titles.
 - [x] CSV export at `/admin/submissions/export.csv` — filters respected, download attachment
 
 ## 9. Polish & Hardening
-- [ ] Branded layout (replace Phoenix defaults)
-- [ ] Error pages (404, 500) styled
-- [ ] Rate limiting on submission endpoint
-- [ ] Pagination on history list
-- [ ] End-to-end test coverage for happy path
+- [x] Branded layout — DaisyUI navbar with Veriti brand, My Submissions link, dropdown user menu, "· Veriti" title suffix
+- [x] Error pages (404, 500) — styled full-page templates with DaisyUI, fallback for other codes
+- [x] Rate limiting on submission endpoint — GenServer tracking max 10/hour per user
+- [x] Pagination on history list — 20 per page, prev/next controls, live-updates after validation
+- [x] End-to-end test coverage — 15 LiveView tests covering auth redirect, home CTA, list, upload+submit, show, admin guard
 
 ---
 
 ## Next Up
-**Polish & Hardening** — Error pages, rate limiting, pagination, E2E tests (section 9)
+**All sections complete** ✓

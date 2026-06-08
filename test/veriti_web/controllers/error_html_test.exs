@@ -1,14 +1,19 @@
 defmodule VeritiWeb.ErrorHTMLTest do
   use VeritiWeb.ConnCase, async: true
 
-  # Bring render_to_string/4 for testing custom views
   import Phoenix.Template, only: [render_to_string: 4]
 
   test "renders 404.html" do
-    assert render_to_string(VeritiWeb.ErrorHTML, "404", "html", []) == "Not Found"
+    html = render_to_string(VeritiWeb.ErrorHTML, "404", "html", [])
+    assert html =~ "404"
+    assert html =~ "Page not found"
+    assert html =~ "Go to Home"
   end
 
   test "renders 500.html" do
-    assert render_to_string(VeritiWeb.ErrorHTML, "500", "html", []) == "Internal Server Error"
+    html = render_to_string(VeritiWeb.ErrorHTML, "500", "html", [])
+    assert html =~ "500"
+    assert html =~ "Something went wrong"
+    assert html =~ "Go to Home"
   end
 end

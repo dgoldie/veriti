@@ -5,11 +5,23 @@ defmodule Veriti.TitleSubmissions do
   alias Veriti.Repo
   alias Veriti.TitleSubmissions.TitleSubmission
 
-  def list_user_submissions(user_id) do
+  @per_page 20
+
+  def list_user_submissions(user_id, page \\ 1) do
+    offset = (page - 1) * @per_page
+
     TitleSubmission
     |> where(user_id: ^user_id)
     |> order_by(desc: :inserted_at)
+    |> limit(@per_page)
+    |> offset(^offset)
     |> Repo.all()
+  end
+
+  def count_user_submissions(user_id) do
+    TitleSubmission
+    |> where(user_id: ^user_id)
+    |> Repo.aggregate(:count)
   end
 
   def get_submission!(id), do: Repo.get!(TitleSubmission, id)

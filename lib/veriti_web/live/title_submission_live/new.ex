@@ -115,6 +115,18 @@ defmodule VeritiWeb.TitleSubmissionLive.New do
 
   def handle_event("submit", _params, socket) do
     user = socket.assigns.current_scope.user
+
+    case Veriti.RateLimiter.check_submission(user.id) do
+      {:error, :rate_limited} ->
+        {:noreply,
+         put_flash(socket, :error, "Too many submissions. You may submit up to 10 titles per hour.")}
+
+      :ok ->
+        do_submit(socket, user)
+    end
+  end
+
+  defp do_submit(socket, user) do
     uploads_dir = uploads_dir()
     File.mkdir_p!(uploads_dir)
 

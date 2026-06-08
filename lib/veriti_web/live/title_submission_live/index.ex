@@ -3,6 +3,8 @@ defmodule VeritiWeb.TitleSubmissionLive.Index do
 
   alias Veriti.TitleSubmissions
 
+  @per_page 20
+
   @impl true
   def mount(_params, _session, socket) do
     user = socket.assigns.current_scope.user
@@ -11,15 +13,19 @@ defmodule VeritiWeb.TitleSubmissionLive.Index do
       Phoenix.PubSub.subscribe(Veriti.PubSub, "submissions:user:#{user.id}")
     end
 
-    submissions = TitleSubmissions.list_user_submissions(user.id)
-    {:ok, assign(socket, :submissions, submissions)}
+    {:ok, load_page(socket, user, 1)}
   end
 
   @impl true
   def handle_info(:validation_complete, socket) do
     user = socket.assigns.current_scope.user
-    submissions = TitleSubmissions.list_user_submissions(user.id)
-    {:noreply, assign(socket, :submissions, submissions)}
+    {:noreply, load_page(socket, user, socket.assigns.page)}
+  end
+
+  @impl true
+  def handle_event("goto-page", %{"page" => page}, socket) do
+    user = socket.assigns.current_scope.user
+    {:noreply, load_page(socket, user, String.to_integer(page))}
   end
 
   @impl true
@@ -36,7 +42,7 @@ defmodule VeritiWeb.TitleSubmissionLive.Index do
           </:actions>
         </.header>
 
-        <%= if @submissions == [] do %>
+        <%= if @total == 0 do %>
           <div class="text-center py-16 text-base-content/50">
             <p class="text-lg">No submissions yet.</p>
             <p class="mt-1 text-sm">
@@ -80,10 +86,43 @@ defmodule VeritiWeb.TitleSubmissionLive.Index do
               </tbody>
             </table>
           </div>
+
+          <%= if @total_pages > 1 do %>
+            <div class="flex items-center justify-between mt-6">
+              <button
+                class="btn btn-outline btn-sm"
+                phx-click="goto-page"
+                phx-value-page={@page - 1}
+                disabled={@page <= 1}
+              >
+                ← Previous
+              </button>
+              <span class="text-sm text-base-content/60">
+                Page {@page} of {@total_pages}
+              </span>
+              <button
+                class="btn btn-outline btn-sm"
+                phx-click="goto-page"
+                phx-value-page={@page + 1}
+                disabled={@page >= @total_pages}
+              >
+                Next →
+              </button>
+            </div>
+          <% end %>
         <% end %>
       </div>
     </Layouts.app>
     """
+  end
+
+  defp load_page(socket, user, page) do
+    total = TitleSubmissions.count_user_submissions(user.id)
+    total_pages = max(1, ceil(total / @per_page))
+    page = min(page, total_pages)
+    submissions = TitleSubmissions.list_user_submissions(user.id, page)
+
+    assign(socket, submissions: submissions, page: page, total: total, total_pages: total_pages)
   end
 
   defp status_badge_class("pending"), do: "badge-warning"
