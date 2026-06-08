@@ -12,9 +12,7 @@ defmodule Veriti.Application do
       Veriti.Repo,
       {DNSCluster, query: Application.get_env(:veriti, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Veriti.PubSub},
-      # Start a worker by calling: Veriti.Worker.start_link(arg)
-      # {Veriti.Worker, arg},
-      # Start to serve requests, typically the last entry
+      {Task.Supervisor, name: Veriti.TaskSupervisor},
       VeritiWeb.Endpoint
     ]
 

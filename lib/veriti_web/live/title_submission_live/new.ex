@@ -1,7 +1,7 @@
 defmodule VeritiWeb.TitleSubmissionLive.New do
   use VeritiWeb, :live_view
 
-  alias Veriti.TitleSubmissions
+  alias Veriti.{TitleSubmissions, Validation}
 
   @max_file_size 10 * 1024 * 1024
 
@@ -136,10 +136,14 @@ defmodule VeritiWeb.TitleSubmissionLive.New do
     case results do
       [attrs] ->
         case TitleSubmissions.create_submission(Map.put(attrs, :user_id, user.id)) do
-          {:ok, _submission} ->
+          {:ok, submission} ->
+            Task.Supervisor.start_child(Veriti.TaskSupervisor, fn ->
+              Validation.process(submission)
+            end)
+
             {:noreply,
              socket
-             |> put_flash(:info, "Title submitted successfully.")
+             |> put_flash(:info, "Title submitted. Validation is running in the background.")
              |> push_navigate(to: ~p"/submissions")}
 
           {:error, _changeset} ->

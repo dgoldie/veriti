@@ -1,4 +1,5 @@
 defmodule Veriti.TitleSubmissions do
+  import Ecto.Changeset, only: [change: 2]
   import Ecto.Query
 
   alias Veriti.Repo
@@ -11,9 +12,17 @@ defmodule Veriti.TitleSubmissions do
     |> Repo.all()
   end
 
+  def get_submission!(id), do: Repo.get!(TitleSubmission, id)
+
   def create_submission(attrs) do
     %TitleSubmission{}
     |> TitleSubmission.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def update_submission_status(%TitleSubmission{} = submission, status) do
+    submission
+    |> change(status: status)
+    |> Repo.update()
   end
 end

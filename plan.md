@@ -43,15 +43,15 @@ Elixir/Phoenix web app for validating vehicle titles.
 - [x] Brief explainer of the validation process (upload → OCR → results)
 
 ## 6. Title Validation Engine
-- [ ] OCR extraction via `tesseract_ocr` hex package (wraps Tesseract)
+- [x] OCR extraction via `tesseract_ocr` hex package (wraps Tesseract)
   - Run OCR on uploaded image to extract raw text
   - Parse extracted text into structured fields (VIN, title number, owner, odometer, lienholder, state)
-- [ ] `Veriti.Validation` context with pure validation logic
-- [ ] VIN checksum validation (ISO 3779)
-- [ ] State-specific title number format rules
-- [ ] Lien detection logic
-- [ ] Validation result schema (pass / fail / warning + reason codes)
-- [ ] Associate results with submission
+- [x] `Veriti.Validation` context with pure validation logic
+- [x] VIN checksum validation (ISO 3779)
+- [x] State-specific title number format rules (16 states implemented)
+- [x] Lien detection logic
+- [x] Validation result schema (pass / fail / warning + reason codes)
+- [x] Associate results with submission (async via Task.Supervisor)
 
 ## 7. Validation Results UI
 - [ ] Results page showing pass/fail per field with reasons
@@ -74,4 +74,4 @@ Elixir/Phoenix web app for validating vehicle titles.
 ---
 
 ## Next Up
-**Title Validation Engine** — OCR extraction and validation logic (section 6)
+**Validation Results UI** — Results page, submission detail view (section 7)

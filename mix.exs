@@ -41,6 +41,7 @@ defmodule Veriti.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
+      {:tesseract_ocr, "~> 0.1"},
       {:phoenix, "~> 1.8.7"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.13"},
