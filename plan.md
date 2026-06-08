@@ -36,7 +36,13 @@ Elixir/Phoenix web app for validating vehicle titles.
 - [x] Store uploaded file (local for dev, object storage for prod)
 - [x] Route protected behind authenticated scope
 
-## 5. Title Validation Engine
+## 5. Home Page
+- [x] Replace Phoenix default home page with branded Veriti landing page
+- [x] Hero section with value proposition and call-to-action
+- [x] "Submit a Title" CTA links to `/submissions/new` (or register if logged out)
+- [x] Brief explainer of the validation process (upload → OCR → results)
+
+## 6. Title Validation Engine
 - [ ] OCR extraction via `tesseract_ocr` hex package (wraps Tesseract)
   - Run OCR on uploaded image to extract raw text
   - Parse extracted text into structured fields (VIN, title number, owner, odometer, lienholder, state)
@@ -47,18 +53,18 @@ Elixir/Phoenix web app for validating vehicle titles.
 - [ ] Validation result schema (pass / fail / warning + reason codes)
 - [ ] Associate results with submission
 
-## 6. Validation Results UI
+## 7. Validation Results UI
 - [ ] Results page showing pass/fail per field with reasons
 - [ ] Submission history list (index) per user
 - [ ] Detail view for a past submission
 
-## 7. Admin / Reporting
+## 8. Admin / Reporting
 - [ ] Admin role on `users` (boolean flag or separate table)
 - [ ] Admin-only route scope
 - [ ] Submissions dashboard (all users, filterable by status/date)
 - [ ] CSV export of submissions
 
-## 8. Polish & Hardening
+## 9. Polish & Hardening
 - [ ] Branded layout (replace Phoenix defaults)
 - [ ] Error pages (404, 500) styled
 - [ ] Rate limiting on submission endpoint
@@ -68,4 +74,4 @@ Elixir/Phoenix web app for validating vehicle titles.
 ---
 
 ## Next Up
-**Title Validation Engine** — OCR extraction and validation logic (section 5)
+**Title Validation Engine** — OCR extraction and validation logic (section 6)
